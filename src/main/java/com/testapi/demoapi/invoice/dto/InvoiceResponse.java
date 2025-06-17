@@ -12,5 +12,5 @@ import lombok.*;
 public class InvoiceResponse {
     private Integer id;
     private String totalAmount;
-    private CustomerEntity customer;
+    private Integer customer;
 }

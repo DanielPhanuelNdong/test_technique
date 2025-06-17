@@ -1,33 +1,66 @@
 package com.testapi.demoapi.customer.service;
 
+import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.customer.dto.CustomerRequest;
 import com.testapi.demoapi.customer.dto.CustomerResponse;
+import com.testapi.demoapi.customer.mappers.CustomerMappers;
+import com.testapi.demoapi.customer.repository.RepositoryCustomer;
+import com.testapi.demoapi.invoice.repository.RepositoryInvoice;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class CustomerServiceImpl1 implements  CustomerService{
+
+    private final RepositoryCustomer repositoryCustomer;
+    private final CustomerMappers customerMappers;
+
+    public CustomerServiceImpl1(RepositoryInvoice repositoryInvoice, RepositoryCustomer repositoryCustomer, CustomerMappers customerMappers) {
+        this.repositoryCustomer = repositoryCustomer;
+        this.customerMappers = customerMappers;
+    }
+
+
     @Override
     public Integer createCustomer(CustomerRequest customerRequest) {
-        return 0;
+        CustomerEntity customer = customerMappers.toEntity(customerRequest);
+        customer = repositoryCustomer.save(customer);
+        return customer.getId();
     }
 
     @Override
     public CustomerResponse getCustomerById(Integer id) {
-        return null;
+        CustomerEntity customer = repositoryCustomer.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer with ID " + id + " not found"));
+        return customerMappers.toDto(customer);
     }
 
     @Override
     public List<CustomerResponse> getAllCustomer() {
-        return List.of();
+        return repositoryCustomer.findAll()
+                .stream()
+                .map(customerMappers::toDto)
+                .toList();
     }
 
     @Override
-    public Integer updateUser(Integer id, CustomerRequest customerRequest) {
-        return 0;
+    public Integer updateCustomer(Integer id, CustomerRequest customerRequest) {
+        CustomerEntity existingCustomer = repositoryCustomer.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer with ID " + id + " not found"));
+
+        existingCustomer.setName(customerRequest.getName());
+        existingCustomer.setEmail(customerRequest.getEmail());
+        existingCustomer.setPhone(customerRequest.getPhone());
+
+        existingCustomer = repositoryCustomer.save(existingCustomer);
+        return existingCustomer.getId();
     }
 
     @Override
     public void deleteCustomer(Integer id) {
-
+        CustomerEntity customer = repositoryCustomer.findById(id)
+                .orElseThrow(() -> new RuntimeException("Customer with ID " + id + " not found"));
+        repositoryCustomer.delete(customer);
     }
 }

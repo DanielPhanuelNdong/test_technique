@@ -9,6 +9,6 @@ public interface CustomerService {
     Integer createCustomer(CustomerRequest customerRequest);
     CustomerResponse getCustomerById(Integer id);
     List<CustomerResponse> getAllCustomer();
-    Integer updateUser(Integer id, CustomerRequest customerRequest);
+    Integer updateCustomer(Integer id, CustomerRequest customerRequest);
     void deleteCustomer(Integer id);
 }
