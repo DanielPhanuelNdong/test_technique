@@ -1,5 +1,6 @@
 package com.testapi.demoapi.invoice.mappers;
 
+import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.invoice.InvoiceEntity;
 import com.testapi.demoapi.invoice.dto.InvoiceRequest;
 import com.testapi.demoapi.invoice.dto.InvoiceResponse;
@@ -19,10 +20,18 @@ public class InvoiceMappers {
         return invoiceResponse;
     }
 
-    public InvoiceEntity toEntity(InvoiceRequest invoiceRequest) {
+    public InvoiceEntity toEntity(InvoiceRequest invoiceRequest, CustomerEntity customer) {
         return InvoiceEntity.builder()
                 .totalAmount(invoiceRequest.getTotalAmount())
-                .customer(invoiceRequest.getCustomer())
+                .customer(customer)
                 .build();
     }
+
+
+//    public InvoiceEntity toEntity(InvoiceRequest invoiceRequest) {
+//        return InvoiceEntity.builder()
+//                .totalAmount(invoiceRequest.getTotalAmount())
+//                .customer(invoiceRequest.getCustomer())
+//                .build();
+//    }
 }

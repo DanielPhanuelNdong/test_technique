@@ -18,8 +18,16 @@ public class CustomerMappers {
         customerResponse.setName(customer.getName());
         customerResponse.setEmail(customer.getEmail());
         customerResponse.setPhone(customer.getPhone());
-        List<InvoiceResponse> invoiceResponses = customer.getInvoices().stream().map(InvoiceMappers::toDto).toList();
-        customerResponse.setInvoices(invoiceResponses);
+
+        if (customer.getInvoices() != null) {
+            List<InvoiceResponse> invoiceResponses = customer.getInvoices().stream()
+                    .map(InvoiceMappers::toDto)
+                    .toList();
+            customerResponse.setInvoices(invoiceResponses);
+        } else {
+            customerResponse.setInvoices(List.of());
+        }
+
         return customerResponse;
     }
 

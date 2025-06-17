@@ -30,7 +30,7 @@ public class CustomerEntity {
     @Column(nullable = false, unique = true)
     private String phone;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<InvoiceEntity> invoices;
     @CreationTimestamp
     @Column(name = "create_at")

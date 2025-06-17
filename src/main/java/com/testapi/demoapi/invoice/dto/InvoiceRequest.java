@@ -14,5 +14,5 @@ import lombok.*;
 @Builder
 public class InvoiceRequest {
     private String totalAmount;
-    private CustomerEntity customer;
+    private Integer customer;
 }

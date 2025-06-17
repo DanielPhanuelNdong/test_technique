@@ -31,7 +31,7 @@ public class CustomerServiceImpl1 implements  CustomerService{
 
     @Override
     public CustomerResponse getCustomerById(Integer id) {
-        CustomerEntity customer = repositoryCustomer.findById(id)
+        CustomerEntity customer = repositoryCustomer.findWithInvoicesById(id)
                 .orElseThrow(() -> new RuntimeException("Customer with ID " + id + " not found"));
         return customerMappers.toDto(customer);
     }
@@ -46,7 +46,7 @@ public class CustomerServiceImpl1 implements  CustomerService{
 
     @Override
     public Integer updateCustomer(Integer id, CustomerRequest customerRequest) {
-        CustomerEntity existingCustomer = repositoryCustomer.findById(id)
+        CustomerEntity existingCustomer = repositoryCustomer.findWithInvoicesById(id)
                 .orElseThrow(() -> new RuntimeException("Customer with ID " + id + " not found"));
 
         existingCustomer.setName(customerRequest.getName());
