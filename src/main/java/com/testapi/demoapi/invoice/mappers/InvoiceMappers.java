@@ -4,6 +4,7 @@ import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.invoice.InvoiceEntity;
 import com.testapi.demoapi.invoice.dto.InvoiceRequest;
 import com.testapi.demoapi.invoice.dto.InvoiceResponse;
+import com.testapi.demoapi.invoiceItems.mappers.InvoiceItemsMappers;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +16,8 @@ public class InvoiceMappers {
         InvoiceResponse invoiceResponse = new InvoiceResponse();
         invoiceResponse.setId(invoice.getId());
         invoiceResponse.setTotalAmount(invoice.getTotalAmount());
+        invoiceResponse.setBillingAddress(invoice.getBillingAddress().getId());
+        invoiceResponse.setInvoiceItems(invoice.getInvoiceItems().stream().map(invoiceItemsEntity -> InvoiceItemsMappers.toDto(invoiceItemsEntity, invoice)).toList());
         invoiceResponse.setCustomer(invoice.getCustomer().getId());
 
         return invoiceResponse;

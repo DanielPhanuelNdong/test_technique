@@ -18,6 +18,7 @@ public class CustomerMappers {
         customerResponse.setName(customer.getName());
         customerResponse.setEmail(customer.getEmail());
         customerResponse.setPhone(customer.getPhone());
+        customerResponse.setAddress(customer.getAddress().getId());
 
         if (customer.getInvoices() != null) {
             List<InvoiceResponse> invoiceResponses = customer.getInvoices().stream()

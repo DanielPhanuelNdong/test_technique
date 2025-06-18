@@ -1,6 +1,5 @@
-package com.testapi.demoapi.customer;
+package com.testapi.demoapi.invoiceItems;
 
-import com.testapi.demoapi.address.AddressEntity;
 import com.testapi.demoapi.invoice.InvoiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -8,16 +7,15 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.Instant;
-import java.util.List;
 
 @Entity
-@Table(name = "customer")
+@Table(name = "invoice_items")
 @AllArgsConstructor
 @NoArgsConstructor
-@Setter
 @Getter
+@Setter
 @Builder
-public class CustomerEntity {
+public class InvoiceItemsEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -25,18 +23,18 @@ public class CustomerEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(nullable = false)
+    private Integer quantity;
 
-    @Column(nullable = false, unique = true)
-    private String phone;
+    @Column(nullable = false)
+    private Double price;
 
-    @OneToMany(mappedBy = "customer", orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<InvoiceEntity> invoices;
+    @Column(nullable = false)
+    private Double total;
 
     @ManyToOne
-    @JoinColumn(name = "address_id")
-    private AddressEntity address;
+    @JoinColumn(name = "invoice_id")
+    private InvoiceEntity invoice;
 
     @CreationTimestamp
     @Column(name = "create_at")
@@ -45,5 +43,4 @@ public class CustomerEntity {
     @UpdateTimestamp
     @Column(name = "update_at")
     private Instant updateAt;
-
 }
