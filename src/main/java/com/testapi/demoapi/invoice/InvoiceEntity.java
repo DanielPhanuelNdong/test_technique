@@ -36,7 +36,6 @@ public class InvoiceEntity {
     private AddressEntity billingAddress;
 
     @OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "invoice_items_id")
     private List<InvoiceItemsEntity> invoiceItems;
 
     @CreationTimestamp

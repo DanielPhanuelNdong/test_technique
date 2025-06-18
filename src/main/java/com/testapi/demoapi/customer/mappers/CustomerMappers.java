@@ -1,5 +1,7 @@
 package com.testapi.demoapi.customer.mappers;
 
+import com.testapi.demoapi.address.dto.AddressResponse;
+import com.testapi.demoapi.address.mappers.AddressMappers;
 import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.customer.dto.CustomerRequest;
 import com.testapi.demoapi.customer.dto.CustomerResponse;
@@ -18,7 +20,13 @@ public class CustomerMappers {
         customerResponse.setName(customer.getName());
         customerResponse.setEmail(customer.getEmail());
         customerResponse.setPhone(customer.getPhone());
-        customerResponse.setAddress(customer.getAddress().getId());
+
+        if (customer.getAddress() != null) {
+            AddressResponse addressResponses = AddressMappers.toDto(customer.getAddress());
+            customerResponse.setAddress(addressResponses);
+        } else {
+            customerResponse.setAddress(null);
+        }
 
         if (customer.getInvoices() != null) {
             List<InvoiceResponse> invoiceResponses = customer.getInvoices().stream()

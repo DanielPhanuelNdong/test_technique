@@ -8,9 +8,11 @@ import com.testapi.demoapi.invoiceItems.dto.InvoiceItemsRequest;
 import com.testapi.demoapi.invoiceItems.dto.InvoiceItemsResponse;
 import com.testapi.demoapi.invoiceItems.mappers.InvoiceItemsMappers;
 import com.testapi.demoapi.invoiceItems.repository.InvoiceItemsRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class InvoiceItemsServiceImpl1 implements InvoiceItemsService{
 
     private final InvoiceItemsRepository invoiceItemsRepository;
@@ -24,7 +26,9 @@ public class InvoiceItemsServiceImpl1 implements InvoiceItemsService{
     }
 
     @Override
-    public Integer createInvoiceItems(InvoiceItemsRequest invoiceItemsRequest, InvoiceEntity invoiceEntity) {
+    public Integer createInvoiceItems(InvoiceItemsRequest invoiceItemsRequest) {
+        InvoiceEntity invoiceEntity = repositoryInvoice.findById(invoiceItemsRequest.getInvoice())
+                .orElseThrow(() -> new RuntimeException("invoice with ID " + invoiceItemsRequest.getInvoice()+ " not found"));
         InvoiceItemsEntity invoiceItems = invoiceItemsMappers.toEntity(invoiceItemsRequest, invoiceEntity);
         invoiceItems = invoiceItemsRepository.save(invoiceItems);
         return invoiceItems.getId();

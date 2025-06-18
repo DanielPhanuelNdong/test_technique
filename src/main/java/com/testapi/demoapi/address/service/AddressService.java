@@ -8,9 +8,9 @@ import com.testapi.demoapi.invoice.InvoiceEntity;
 import java.util.List;
 
 public interface AddressService {
-    Integer createAddress(AddressRequest addressRequest, InvoiceEntity invoiceEntity, CustomerEntity customerEntity);
+    Integer createAddress(AddressRequest addressRequest);
     AddressResponse getAddressById(Integer id);
     List<AddressResponse> getAllAddress();
-    Integer updateAddress(Integer id, AddressRequest addressRequest, InvoiceEntity invoiceEntity, CustomerEntity customerEntity);
+    Integer updateAddress(Integer id, AddressRequest addressRequest);
     void deleteAddress(Integer id);
 }

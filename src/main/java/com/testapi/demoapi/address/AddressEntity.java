@@ -35,11 +35,9 @@ public class AddressEntity {
     private String country;
 
     @OneToMany(mappedBy = "address", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_customer")
     private List<CustomerEntity> customers;
 
-    @OneToMany(mappedBy = "address", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
-    @JoinColumn(name = "id_invoice")
+    @OneToMany(mappedBy = "billingAddress", fetch = FetchType.LAZY, orphanRemoval = true, cascade = CascadeType.ALL)
     private List<InvoiceEntity> invoices;
 
     @CreationTimestamp

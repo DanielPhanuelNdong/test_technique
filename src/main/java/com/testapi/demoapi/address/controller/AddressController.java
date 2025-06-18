@@ -23,8 +23,8 @@ public class AddressController {
 
     // Create Address
     @PostMapping
-    public ResponseEntity<Integer> createAddress(@RequestBody AddressRequest addressRequest, InvoiceEntity invoiceEntity, CustomerEntity customerEntity) {
-        Integer addressId = addressService.createAddress(addressRequest, invoiceEntity, customerEntity);
+    public ResponseEntity<Integer> createAddress(@RequestBody AddressRequest addressRequest) {
+        Integer addressId = addressService.createAddress(addressRequest);
         return new ResponseEntity<>(addressId, HttpStatus.CREATED);
     }
 
@@ -44,8 +44,8 @@ public class AddressController {
 
     // Update an address
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateAddress(@PathVariable Integer id, @RequestBody AddressRequest addressRequest, InvoiceEntity invoiceEntity, CustomerEntity customerEntity) {
-        Integer updatedId = addressService.updateAddress(id, addressRequest, invoiceEntity, customerEntity);
+    public ResponseEntity<Integer> updateAddress(@PathVariable Integer id, @RequestBody AddressRequest addressRequest) {
+        Integer updatedId = addressService.updateAddress(id, addressRequest);
         return ResponseEntity.ok(updatedId);
     }
 

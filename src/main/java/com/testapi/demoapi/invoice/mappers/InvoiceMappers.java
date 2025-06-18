@@ -1,5 +1,7 @@
 package com.testapi.demoapi.invoice.mappers;
 
+import com.testapi.demoapi.address.dto.AddressResponse;
+import com.testapi.demoapi.address.mappers.AddressMappers;
 import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.invoice.InvoiceEntity;
 import com.testapi.demoapi.invoice.dto.InvoiceRequest;
@@ -16,9 +18,15 @@ public class InvoiceMappers {
         InvoiceResponse invoiceResponse = new InvoiceResponse();
         invoiceResponse.setId(invoice.getId());
         invoiceResponse.setTotalAmount(invoice.getTotalAmount());
-        invoiceResponse.setBillingAddress(invoice.getBillingAddress().getId());
         invoiceResponse.setInvoiceItems(invoice.getInvoiceItems().stream().map(invoiceItemsEntity -> InvoiceItemsMappers.toDto(invoiceItemsEntity, invoice)).toList());
         invoiceResponse.setCustomer(invoice.getCustomer().getId());
+
+        if (invoice.getBillingAddress() != null) {
+            AddressResponse addressResponses = AddressMappers.toDto(invoice.getBillingAddress());
+            invoiceResponse.setBillingAddress(addressResponses);
+        } else {
+            invoiceResponse.setBillingAddress(null);
+        }
 
         return invoiceResponse;
     }

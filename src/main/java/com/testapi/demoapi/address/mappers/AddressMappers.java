@@ -12,7 +12,7 @@ import java.util.List;
 @Component
 public class AddressMappers {
 
-    public AddressResponse toDto(AddressEntity addressEntity) {
+    public static AddressResponse toDto(AddressEntity addressEntity) {
         return AddressResponse.builder()
                 .id(addressEntity.getId())
                 .street(addressEntity.getStreet())

@@ -1,5 +1,6 @@
 package com.testapi.demoapi.customer.dto;
 
+import com.testapi.demoapi.address.dto.AddressResponse;
 import com.testapi.demoapi.invoice.dto.InvoiceResponse;
 import lombok.*;
 
@@ -16,7 +17,7 @@ public class CustomerResponse {
     private String name;
     private String email;
     private String phone;
-    private  Integer address;
+    private AddressResponse address;
     private List<InvoiceResponse> invoices;
 
 }

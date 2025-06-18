@@ -10,7 +10,7 @@ import com.testapi.demoapi.invoiceItems.dto.InvoiceItemsResponse;
 import java.util.List;
 
 public interface InvoiceItemsService {
-    Integer createInvoiceItems(InvoiceItemsRequest invoiceItemsRequest, InvoiceEntity invoiceEntity);
+    Integer createInvoiceItems(InvoiceItemsRequest invoiceItemsRequest);
     InvoiceItemsResponse getInvoiceItemsById(Integer id);
     List<InvoiceItemsResponse> getAllInvoiceItems();
     Integer updateInvoiceItems(Integer id, InvoiceItemsRequest invoiceItemsRequest);

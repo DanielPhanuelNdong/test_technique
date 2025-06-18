@@ -23,8 +23,8 @@ public class InvoiceItemsController {
 
     // Create Invoice Items
     @PostMapping
-    public ResponseEntity<Integer> createInvoiceItems(@RequestBody InvoiceItemsRequest invoiceItemsRequest, InvoiceEntity invoiceEntity) {
-        Integer invoiceItemsId = invoiceItemsService.createInvoiceItems(invoiceItemsRequest, invoiceEntity);
+    public ResponseEntity<Integer> createInvoiceItems(@RequestBody InvoiceItemsRequest invoiceItemsRequest) {
+        Integer invoiceItemsId = invoiceItemsService.createInvoiceItems(invoiceItemsRequest);
         return new ResponseEntity<>(invoiceItemsId, HttpStatus.CREATED);
     }
 
