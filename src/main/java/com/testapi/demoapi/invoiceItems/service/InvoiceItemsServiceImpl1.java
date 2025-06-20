@@ -1,6 +1,7 @@
 package com.testapi.demoapi.invoiceItems.service;
 
 import com.testapi.demoapi.address.AddressEntity;
+import com.testapi.demoapi.exceptions.ElementNotFoundException;
 import com.testapi.demoapi.invoice.InvoiceEntity;
 import com.testapi.demoapi.invoice.mappers.InvoiceMappers;
 import com.testapi.demoapi.invoice.repository.RepositoryInvoice;
@@ -33,7 +34,7 @@ public class InvoiceItemsServiceImpl1 implements InvoiceItemsService{
     @Override
     public Integer createInvoiceItems(InvoiceItemsRequest invoiceItemsRequest) {
         InvoiceEntity invoiceEntity = repositoryInvoice.findById(invoiceItemsRequest.getInvoice())
-                .orElseThrow(() -> new RuntimeException("invoice with ID " + invoiceItemsRequest.getInvoice()+ " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("invoice with ID " + invoiceItemsRequest.getInvoice()+ " not found"));
         InvoiceItemsEntity invoiceItems = invoiceItemsMappers.toEntity(invoiceItemsRequest, invoiceEntity);
         invoiceItems = invoiceItemsRepository.save(invoiceItems);
         return invoiceItems.getId();
@@ -42,7 +43,7 @@ public class InvoiceItemsServiceImpl1 implements InvoiceItemsService{
     @Override
     public InvoiceItemsResponse getInvoiceItemsById(Integer id) {
         InvoiceItemsEntity invoiceItems = invoiceItemsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("invoice items with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("invoice items with ID " + id + " not found"));
         return InvoiceItemsMappers.toDto(invoiceItems);
     }
 
@@ -75,7 +76,7 @@ public class InvoiceItemsServiceImpl1 implements InvoiceItemsService{
     @Override
     public Integer updateInvoiceItems(Integer id, InvoiceItemsRequest invoiceItemsRequest) {
         InvoiceItemsEntity existingItems = invoiceItemsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("invoice items with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("invoice items with ID " + id + " not found"));
 
         existingItems.setName(invoiceItemsRequest.getName());
         existingItems.setPrice(invoiceItemsRequest.getPrice());
@@ -90,7 +91,7 @@ public class InvoiceItemsServiceImpl1 implements InvoiceItemsService{
     @Override
     public void deleteInvoiceItems(Integer id) {
         InvoiceItemsEntity invoiceItems = invoiceItemsRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invoice items with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Invoice items with ID " + id + " not found"));
         invoiceItemsRepository.delete(invoiceItems);
     }
 }

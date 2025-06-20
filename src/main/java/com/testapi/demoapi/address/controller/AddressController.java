@@ -6,6 +6,7 @@ import com.testapi.demoapi.address.service.AddressService;
 import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.customer.dto.CustomerResponse;
 import com.testapi.demoapi.invoice.InvoiceEntity;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class AddressController {
 
     // Create Address
     @PostMapping
-    public ResponseEntity<Integer> createAddress(@RequestBody AddressRequest addressRequest) {
+    public ResponseEntity<Integer> createAddress(@RequestBody @Valid AddressRequest addressRequest) {
         Integer addressId = addressService.createAddress(addressRequest);
         return new ResponseEntity<>(addressId, HttpStatus.CREATED);
     }
@@ -67,7 +68,7 @@ public class AddressController {
 
     // Update an address
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateAddress(@PathVariable Integer id, @RequestBody AddressRequest addressRequest) {
+    public ResponseEntity<Integer> updateAddress(@PathVariable Integer id, @RequestBody @Valid AddressRequest addressRequest) {
         Integer updatedId = addressService.updateAddress(id, addressRequest);
         return ResponseEntity.ok(updatedId);
     }

@@ -1,10 +1,13 @@
 package com.testapi.demoapi.customer.service;
 
+import com.testapi.demoapi.address.AddressEntity;
+import com.testapi.demoapi.address.repository.AddressRepository;
 import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.customer.dto.CustomerRequest;
 import com.testapi.demoapi.customer.dto.CustomerResponse;
 import com.testapi.demoapi.customer.mappers.CustomerMappers;
 import com.testapi.demoapi.customer.repository.RepositoryCustomer;
+import com.testapi.demoapi.exceptions.ElementNotFoundException;
 import com.testapi.demoapi.invoice.repository.RepositoryInvoice;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,16 +22,27 @@ public class CustomerServiceImpl1 implements  CustomerService{
 
     private final RepositoryCustomer repositoryCustomer;
     private final CustomerMappers customerMappers;
+    private final AddressRepository addressRepository;
 
-    public CustomerServiceImpl1(RepositoryInvoice repositoryInvoice, RepositoryCustomer repositoryCustomer, CustomerMappers customerMappers) {
+    public CustomerServiceImpl1(RepositoryInvoice repositoryInvoice, RepositoryCustomer repositoryCustomer, CustomerMappers customerMappers, AddressRepository addressRepository) {
         this.repositoryCustomer = repositoryCustomer;
         this.customerMappers = customerMappers;
+        this.addressRepository = addressRepository;
     }
 
 
     @Override
     public Integer createCustomer(CustomerRequest customerRequest) {
-        CustomerEntity customer = customerMappers.toEntity(customerRequest);
+        AddressEntity address = new AddressEntity();
+        // Verify that address exist
+        if(customerRequest.getAddress() != null){
+            address = addressRepository.findById(customerRequest.getAddress())
+                    .orElseThrow(() -> new ElementNotFoundException("address with ID " + customerRequest.getAddress() + " not found"));
+        }else {
+            address = null;
+        }
+
+        CustomerEntity customer = customerMappers.toEntity(customerRequest, address);
         customer = repositoryCustomer.save(customer);
         return customer.getId();
     }
@@ -36,7 +50,7 @@ public class CustomerServiceImpl1 implements  CustomerService{
     @Override
     public CustomerResponse getCustomerById(Integer id) {
         CustomerEntity customer = repositoryCustomer.findWithInvoicesById(id)
-                .orElseThrow(() -> new RuntimeException("Customer with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Customer with ID " + id + " not found"));
         return customerMappers.toDto(customer);
     }
 
@@ -69,7 +83,7 @@ public class CustomerServiceImpl1 implements  CustomerService{
     @Override
     public Integer updateCustomer(Integer id, CustomerRequest customerRequest) {
         CustomerEntity existingCustomer = repositoryCustomer.findWithInvoicesById(id)
-                .orElseThrow(() -> new RuntimeException("Customer with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Customer with ID " + id + " not found"));
 
         existingCustomer.setName(customerRequest.getName());
         existingCustomer.setEmail(customerRequest.getEmail());
@@ -82,7 +96,7 @@ public class CustomerServiceImpl1 implements  CustomerService{
     @Override
     public void deleteCustomer(Integer id) {
         CustomerEntity customer = repositoryCustomer.findById(id)
-                .orElseThrow(() -> new RuntimeException("Customer with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Customer with ID " + id + " not found"));
         repositoryCustomer.delete(customer);
     }
 }

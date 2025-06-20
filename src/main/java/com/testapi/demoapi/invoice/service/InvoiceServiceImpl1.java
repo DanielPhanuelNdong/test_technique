@@ -1,7 +1,10 @@
 package com.testapi.demoapi.invoice.service;
 
+import com.testapi.demoapi.address.AddressEntity;
+import com.testapi.demoapi.address.repository.AddressRepository;
 import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.customer.repository.RepositoryCustomer;
+import com.testapi.demoapi.exceptions.ElementNotFoundException;
 import com.testapi.demoapi.invoice.InvoiceEntity;
 import com.testapi.demoapi.invoice.dto.InvoiceRequest;
 import com.testapi.demoapi.invoice.dto.InvoiceResponse;
@@ -20,22 +23,32 @@ public class InvoiceServiceImpl1 implements InvoiceService{
     private  final RepositoryInvoice repositoryInvoice;
     private final RepositoryCustomer repositoryCustomer;
     private final InvoiceMappers invoiceMappers;
+    private final AddressRepository addressRepository;
 
-    public InvoiceServiceImpl1(RepositoryInvoice repositoryInvoice, RepositoryCustomer repositoryCustomer, InvoiceMappers invoiceMappers) {
+    public InvoiceServiceImpl1(RepositoryInvoice repositoryInvoice, RepositoryCustomer repositoryCustomer, InvoiceMappers invoiceMappers, AddressRepository addressRepository) {
         this.repositoryInvoice = repositoryInvoice;
         this.repositoryCustomer = repositoryCustomer;
         this.invoiceMappers = invoiceMappers;
+        this.addressRepository = addressRepository;
     }
 
 
     @Override
     public Integer createInvoice(InvoiceRequest invoiceRequest) {
+        AddressEntity address = new AddressEntity();
+        // Verify that address exist
+        if(invoiceRequest.getBillingAddress() != null){
+            address = addressRepository.findById(invoiceRequest.getBillingAddress())
+                    .orElseThrow(() -> new ElementNotFoundException("Billing address with ID " + invoiceRequest.getBillingAddress() + " not found"));
+        }else {
+            address = null;
+        }
         // Verify that customer exist
         CustomerEntity customer = repositoryCustomer.findById(invoiceRequest.getCustomer())
-                .orElseThrow(() -> new RuntimeException("Customer with ID " + invoiceRequest.getCustomer() + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Customer with ID " + invoiceRequest.getCustomer() + " not found"));
 
         // To mapp request in entity
-        InvoiceEntity invoice = invoiceMappers.toEntity(invoiceRequest, customer);
+        InvoiceEntity invoice = invoiceMappers.toEntity(invoiceRequest, customer, address);
         invoice.setCustomer(customer);
 
         // Save
@@ -46,7 +59,7 @@ public class InvoiceServiceImpl1 implements InvoiceService{
     @Override
     public InvoiceResponse getInvoiceById(Integer id) {
         InvoiceEntity invoice = repositoryInvoice.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invoice with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Invoice with ID " + id + " not found"));
         return InvoiceMappers.toDto(invoice);
     }
 
@@ -68,7 +81,7 @@ public class InvoiceServiceImpl1 implements InvoiceService{
     @Override
     public Page<InvoiceResponse> getInvoicesByCustomer(Integer customerId, int page, int size, String sortBy, String direction) {
         CustomerEntity customer = repositoryInvoice.findById(customerId)
-                .orElseThrow(() -> new RuntimeException("Customer with ID " + customerId + " not found")).getCustomer();
+                .orElseThrow(() -> new ElementNotFoundException("Customer with ID " + customerId + " not found")).getCustomer();
 
         Sort sort = direction.equalsIgnoreCase("desc") ?
                 Sort.by(sortBy).descending() :
@@ -93,10 +106,10 @@ public class InvoiceServiceImpl1 implements InvoiceService{
     @Override
     public Integer updateInvoice(Integer id, InvoiceRequest invoiceRequest) {
         InvoiceEntity existingInvoice = repositoryInvoice.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invoice with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Invoice with ID " + id + " not found"));
 
         CustomerEntity customer = repositoryCustomer.findById(invoiceRequest.getCustomer())
-                .orElseThrow(() -> new RuntimeException("Customer with ID " + invoiceRequest.getCustomer() + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Customer with ID " + invoiceRequest.getCustomer() + " not found"));
 
         existingInvoice.setTotalAmount(invoiceRequest.getTotalAmount());
         existingInvoice.setCustomer(customer);
@@ -108,7 +121,7 @@ public class InvoiceServiceImpl1 implements InvoiceService{
     @Override
     public void deleteInvoice(Integer id) {
         InvoiceEntity invoice = repositoryInvoice.findById(id)
-                .orElseThrow(() -> new RuntimeException("Invoice with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Invoice with ID " + id + " not found"));
         repositoryInvoice.delete(invoice);
     }
 }

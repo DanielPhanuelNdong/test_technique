@@ -1,5 +1,6 @@
 package com.testapi.demoapi.invoice.mappers;
 
+import com.testapi.demoapi.address.AddressEntity;
 import com.testapi.demoapi.address.dto.AddressResponse;
 import com.testapi.demoapi.address.mappers.AddressMappers;
 import com.testapi.demoapi.customer.CustomerEntity;
@@ -33,10 +34,11 @@ public class InvoiceMappers {
         return invoiceResponse;
     }
 
-    public InvoiceEntity toEntity(InvoiceRequest invoiceRequest, CustomerEntity customer) {
+    public InvoiceEntity toEntity(InvoiceRequest invoiceRequest, CustomerEntity customer, AddressEntity billingAddress) {
         return InvoiceEntity.builder()
                 .totalAmount(invoiceRequest.getTotalAmount())
                 .customer(customer)
+                .billingAddress(billingAddress)
                 .build();
     }
 

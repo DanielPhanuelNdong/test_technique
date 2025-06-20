@@ -1,5 +1,6 @@
 package com.testapi.demoapi.customer.mappers;
 
+import com.testapi.demoapi.address.AddressEntity;
 import com.testapi.demoapi.address.dto.AddressResponse;
 import com.testapi.demoapi.address.mappers.AddressMappers;
 import com.testapi.demoapi.customer.CustomerEntity;
@@ -42,11 +43,12 @@ public class CustomerMappers {
         return customerResponse;
     }
 
-    public CustomerEntity toEntity(CustomerRequest customerRequest) {
+    public CustomerEntity toEntity(CustomerRequest customerRequest, AddressEntity address) {
         return CustomerEntity.builder()
                 .name(customerRequest.getName())
                 .email(customerRequest.getEmail())
                 .phone(customerRequest.getPhone())
+                .address(address)
                 .build();
     }
 

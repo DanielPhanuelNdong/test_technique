@@ -32,7 +32,7 @@ public class InvoiceEntity {
     private CustomerEntity customer;
 
     @ManyToOne
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", nullable = true)
     private AddressEntity billingAddress;
 
     @OneToMany(mappedBy = "invoice", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)

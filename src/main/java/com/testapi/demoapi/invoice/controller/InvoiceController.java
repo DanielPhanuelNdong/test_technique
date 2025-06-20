@@ -4,6 +4,7 @@ import com.testapi.demoapi.customer.dto.CustomerResponse;
 import com.testapi.demoapi.invoice.dto.InvoiceRequest;
 import com.testapi.demoapi.invoice.dto.InvoiceResponse;
 import com.testapi.demoapi.invoice.service.InvoiceService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class InvoiceController {
 
     // Create a invoice
     @PostMapping
-    public ResponseEntity<Integer> createInvoice(@RequestBody InvoiceRequest invoiceRequest) {
+    public ResponseEntity<Integer> createInvoice(@RequestBody @Valid InvoiceRequest invoiceRequest) {
         Integer invoiceId = invoiceService.createInvoice(invoiceRequest);
         return new ResponseEntity<>(invoiceId, HttpStatus.CREATED);
     }
@@ -77,7 +78,7 @@ public class InvoiceController {
 
     // ✅ Mettre à jour une facture
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateInvoice(@PathVariable Integer id, @RequestBody InvoiceRequest invoiceRequest) {
+    public ResponseEntity<Integer> updateInvoice(@PathVariable Integer id, @RequestBody @Valid InvoiceRequest invoiceRequest) {
         Integer updatedId = invoiceService.updateInvoice(id, invoiceRequest);
         return ResponseEntity.ok(updatedId);
     }

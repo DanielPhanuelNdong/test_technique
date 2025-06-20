@@ -3,6 +3,7 @@ package com.testapi.demoapi.customer.controller;
 import com.testapi.demoapi.customer.dto.CustomerRequest;
 import com.testapi.demoapi.customer.dto.CustomerResponse;
 import com.testapi.demoapi.customer.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class CustomerController {
 
     // Create customer
     @PostMapping
-    public ResponseEntity<Integer> createCustomer(@RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<Integer> createCustomer(@RequestBody @Valid CustomerRequest customerRequest) {
         Integer customerId = customerService.createCustomer(customerRequest);
         return new ResponseEntity<>(customerId, HttpStatus.CREATED);
     }
@@ -63,10 +64,9 @@ public class CustomerController {
     }
 
 
-
     // Update a customer
     @PutMapping("/{id}")
-    public ResponseEntity<Integer> updateCustomer(@PathVariable Integer id, @RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<Integer> updateCustomer(@PathVariable Integer id, @RequestBody @Valid CustomerRequest customerRequest) {
         Integer updatedId = customerService.updateCustomer(id, customerRequest);
         return ResponseEntity.ok(updatedId);
     }

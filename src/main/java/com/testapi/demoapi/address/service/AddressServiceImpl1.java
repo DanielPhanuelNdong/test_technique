@@ -7,6 +7,7 @@ import com.testapi.demoapi.address.mappers.AddressMappers;
 import com.testapi.demoapi.address.repository.AddressRepository;
 import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.customer.repository.RepositoryCustomer;
+import com.testapi.demoapi.exceptions.ElementNotFoundException;
 import com.testapi.demoapi.invoice.InvoiceEntity;
 import com.testapi.demoapi.invoice.mappers.InvoiceMappers;
 import com.testapi.demoapi.invoice.repository.RepositoryInvoice;
@@ -36,11 +37,7 @@ public class AddressServiceImpl1 implements AddressService{
 
     @Override
     public Integer createAddress(AddressRequest addressRequest) {
-        InvoiceEntity invoiceEntity = repositoryInvoice.findById(addressRequest.getInvoices())
-                .orElseThrow(() -> new RuntimeException("Invoice with ID " + addressRequest.getInvoices() + " not found"));
-        CustomerEntity customerEntity = repositoryCustomer.findById(addressRequest.getCustomers())
-                .orElseThrow(() -> new RuntimeException("Customer with ID " + addressRequest.getInvoices() + " not found"));
-        AddressEntity address = addressMappers.toEntity(addressRequest, invoiceEntity, customerEntity);
+        AddressEntity address = addressMappers.toEntity(addressRequest);
         address = addressRepository.save(address);
         return address.getId();
     }
@@ -48,7 +45,7 @@ public class AddressServiceImpl1 implements AddressService{
     @Override
     public AddressResponse getAddressById(Integer id) {
         AddressEntity address = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Address with ID " + id + " not found"));
         return AddressMappers.toDto(address);
     }
 
@@ -81,7 +78,7 @@ public class AddressServiceImpl1 implements AddressService{
     @Override
     public Integer updateAddress(Integer id, AddressRequest addressRequest) {
         AddressEntity existingAddress = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Address with ID " + id + " not found"));
 
         existingAddress.setCity(addressRequest.getCity());
         existingAddress.setCountry(addressRequest.getCountry());
@@ -95,7 +92,7 @@ public class AddressServiceImpl1 implements AddressService{
     @Override
     public void deleteAddress(Integer id) {
         AddressEntity address = addressRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Address with ID " + id + " not found"));
+                .orElseThrow(() -> new ElementNotFoundException("Address with ID " + id + " not found"));
         addressRepository.delete(address);
     }
 }

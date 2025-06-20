@@ -35,7 +35,7 @@ public class CustomerEntity {
     private List<InvoiceEntity> invoices;
 
     @ManyToOne
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", nullable = true)
     private AddressEntity address;
 
     @CreationTimestamp

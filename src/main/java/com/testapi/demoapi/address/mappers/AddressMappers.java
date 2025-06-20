@@ -24,14 +24,12 @@ public class AddressMappers {
                 .build();
     }
 
-    public AddressEntity toEntity(AddressRequest addressRequest, InvoiceEntity invoiceEntity, CustomerEntity customerEntity) {
+    public AddressEntity toEntity(AddressRequest addressRequest) {
         return AddressEntity.builder()
                 .city(addressRequest.getCity())
                 .country(addressRequest.getCountry())
                 .street(addressRequest.getStreet())
                 .zipCode(addressRequest.getZipCode())
-                .invoices(List.of(invoiceEntity))
-                .customers(List.of(customerEntity))
                 .build();
     }
 }
