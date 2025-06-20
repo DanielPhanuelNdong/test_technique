@@ -6,6 +6,10 @@ import com.testapi.demoapi.customer.dto.CustomerResponse;
 import com.testapi.demoapi.customer.mappers.CustomerMappers;
 import com.testapi.demoapi.customer.repository.RepositoryCustomer;
 import com.testapi.demoapi.invoice.repository.RepositoryInvoice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -42,6 +46,24 @@ public class CustomerServiceImpl1 implements  CustomerService{
                 .stream()
                 .map(customerMappers::toDto)
                 .toList();
+    }
+
+    @Override
+    public Page<CustomerResponse> getCustomersPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repositoryCustomer.findAll(pageable)
+                .map(customerMappers::toDto);
+    }
+
+    @Override
+    public Page<CustomerResponse> getCustomersPaginatedAndSorted(int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return repositoryCustomer.findAll(pageable)
+                .map(customerMappers::toDto);
     }
 
     @Override

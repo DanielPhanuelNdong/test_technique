@@ -18,7 +18,9 @@ public class InvoiceMappers {
         InvoiceResponse invoiceResponse = new InvoiceResponse();
         invoiceResponse.setId(invoice.getId());
         invoiceResponse.setTotalAmount(invoice.getTotalAmount());
-        invoiceResponse.setInvoiceItems(invoice.getInvoiceItems().stream().map(invoiceItemsEntity -> InvoiceItemsMappers.toDto(invoiceItemsEntity, invoice)).toList());
+        invoiceResponse.setCreateAt(invoice.getCreateAt());
+        invoiceResponse.setUpdateAt(invoice.getUpdateAt());
+        invoiceResponse.setInvoiceItems(invoice.getInvoiceItems().stream().map(InvoiceItemsMappers::toDto).toList());
         invoiceResponse.setCustomer(invoice.getCustomer().getId());
 
         if (invoice.getBillingAddress() != null) {

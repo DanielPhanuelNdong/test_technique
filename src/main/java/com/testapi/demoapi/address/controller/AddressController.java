@@ -4,7 +4,9 @@ import com.testapi.demoapi.address.dto.AddressRequest;
 import com.testapi.demoapi.address.dto.AddressResponse;
 import com.testapi.demoapi.address.service.AddressService;
 import com.testapi.demoapi.customer.CustomerEntity;
+import com.testapi.demoapi.customer.dto.CustomerResponse;
 import com.testapi.demoapi.invoice.InvoiceEntity;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3009")
 @RequestMapping("/api/address")
 public class AddressController {
 
@@ -40,6 +43,26 @@ public class AddressController {
     public ResponseEntity<List<AddressResponse>> getAllAddress() {
         List<AddressResponse> address = addressService.getAllAddress();
         return ResponseEntity.ok(address);
+    }
+
+    // get all customers paginated
+    @GetMapping("/paginated")
+    public Page<AddressResponse> getCustomersPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return addressService.getAddressPaginated(page, size);
+    }
+
+    // get all customers paginated and sorted
+    @GetMapping("/sorted")
+    public Page<AddressResponse> getCustomersPaginatedAndSorted(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return addressService.getAddressPaginatedAndSorted(page, size, sortBy, direction);
     }
 
     // Update an address

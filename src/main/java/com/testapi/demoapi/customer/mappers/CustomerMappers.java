@@ -20,6 +20,8 @@ public class CustomerMappers {
         customerResponse.setName(customer.getName());
         customerResponse.setEmail(customer.getEmail());
         customerResponse.setPhone(customer.getPhone());
+        customerResponse.setCreateAt(customer.getCreateAt());
+        customerResponse.setUpdateAt(customer.getUpdateAt());
 
         if (customer.getAddress() != null) {
             AddressResponse addressResponses = AddressMappers.toDto(customer.getAddress());

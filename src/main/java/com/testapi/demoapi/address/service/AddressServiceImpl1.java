@@ -8,7 +8,12 @@ import com.testapi.demoapi.address.repository.AddressRepository;
 import com.testapi.demoapi.customer.CustomerEntity;
 import com.testapi.demoapi.customer.repository.RepositoryCustomer;
 import com.testapi.demoapi.invoice.InvoiceEntity;
+import com.testapi.demoapi.invoice.mappers.InvoiceMappers;
 import com.testapi.demoapi.invoice.repository.RepositoryInvoice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,11 +61,25 @@ public class AddressServiceImpl1 implements AddressService{
     }
 
     @Override
+    public Page<AddressResponse> getAddressPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return addressRepository.findAll(pageable)
+                .map(AddressMappers::toDto);
+    }
+
+    @Override
+    public Page<AddressResponse> getAddressPaginatedAndSorted(int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return addressRepository.findAll(pageable)
+                .map(AddressMappers::toDto);
+    }
+
+    @Override
     public Integer updateAddress(Integer id, AddressRequest addressRequest) {
-        InvoiceEntity invoiceEntity = repositoryInvoice.findById(addressRequest.getInvoices())
-                .orElseThrow(() -> new RuntimeException("Invoice with ID " + addressRequest.getInvoices() + " not found"));
-        CustomerEntity customerEntity = repositoryCustomer.findById(addressRequest.getCustomers())
-                .orElseThrow(() -> new RuntimeException("Customer with ID " + addressRequest.getInvoices() + " not found"));
         AddressEntity existingAddress = addressRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Address with ID " + id + " not found"));
 
@@ -68,8 +87,6 @@ public class AddressServiceImpl1 implements AddressService{
         existingAddress.setCountry(addressRequest.getCountry());
         existingAddress.setStreet(addressRequest.getStreet());
         existingAddress.setZipCode(addressRequest.getZipCode());
-        existingAddress.setInvoices(List.of(invoiceEntity));
-        existingAddress.setCustomers(List.of(customerEntity));
 
         existingAddress = addressRepository.save(existingAddress);
         return existingAddress.getId();

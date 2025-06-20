@@ -7,6 +7,10 @@ import com.testapi.demoapi.invoice.dto.InvoiceRequest;
 import com.testapi.demoapi.invoice.dto.InvoiceResponse;
 import com.testapi.demoapi.invoice.mappers.InvoiceMappers;
 import com.testapi.demoapi.invoice.repository.RepositoryInvoice;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,6 +56,38 @@ public class InvoiceServiceImpl1 implements InvoiceService{
                 .stream()
                 .map(InvoiceMappers::toDto)
                 .toList();
+    }
+
+    @Override
+    public Page<InvoiceResponse> getInvoicesPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return repositoryInvoice.findAll(pageable)
+                .map(InvoiceMappers::toDto);
+    }
+
+    @Override
+    public Page<InvoiceResponse> getInvoicesByCustomer(Integer customerId, int page, int size, String sortBy, String direction) {
+        CustomerEntity customer = repositoryInvoice.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer with ID " + customerId + " not found")).getCustomer();
+
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return repositoryInvoice.findByCustomer(customer, pageable)
+                .map(InvoiceMappers::toDto);
+    }
+
+    @Override
+    public Page<InvoiceResponse> getInvoicesPaginatedAndSorted(int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return repositoryInvoice.findAll(pageable)
+                .map(InvoiceMappers::toDto);
     }
 
     @Override

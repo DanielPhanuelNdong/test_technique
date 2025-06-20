@@ -2,12 +2,17 @@ package com.testapi.demoapi.invoiceItems.service;
 
 import com.testapi.demoapi.address.AddressEntity;
 import com.testapi.demoapi.invoice.InvoiceEntity;
+import com.testapi.demoapi.invoice.mappers.InvoiceMappers;
 import com.testapi.demoapi.invoice.repository.RepositoryInvoice;
 import com.testapi.demoapi.invoiceItems.InvoiceItemsEntity;
 import com.testapi.demoapi.invoiceItems.dto.InvoiceItemsRequest;
 import com.testapi.demoapi.invoiceItems.dto.InvoiceItemsResponse;
 import com.testapi.demoapi.invoiceItems.mappers.InvoiceItemsMappers;
 import com.testapi.demoapi.invoiceItems.repository.InvoiceItemsRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,17 +43,33 @@ public class InvoiceItemsServiceImpl1 implements InvoiceItemsService{
     public InvoiceItemsResponse getInvoiceItemsById(Integer id) {
         InvoiceItemsEntity invoiceItems = invoiceItemsRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("invoice items with ID " + id + " not found"));
-        InvoiceEntity invoiceEntity = repositoryInvoice.findById(invoiceItems.getInvoice().getId())
-                .orElseThrow(() -> new RuntimeException("invoice with ID " + invoiceItems.getInvoice().getId() + " not found"));
-        return InvoiceItemsMappers.toDto(invoiceItems, invoiceEntity);
+        return InvoiceItemsMappers.toDto(invoiceItems);
     }
 
     @Override
     public List<InvoiceItemsResponse> getAllInvoiceItems() {
         return invoiceItemsRepository.findAll()
                 .stream()
-                .map(invoiceItemsEntity -> InvoiceItemsMappers.toDto(invoiceItemsEntity, invoiceItemsEntity.getInvoice()))
+                .map(InvoiceItemsMappers::toDto)
                 .toList();
+    }
+
+    @Override
+    public Page<InvoiceItemsResponse> getInvoicesInvoiceItemsPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return invoiceItemsRepository.findAll(pageable)
+                .map(InvoiceItemsMappers::toDto);
+    }
+
+    @Override
+    public Page<InvoiceItemsResponse> getInvoicesItemsPaginatedAndSorted(int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc") ?
+                Sort.by(sortBy).descending() :
+                Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return invoiceItemsRepository.findAll(pageable)
+                .map(InvoiceItemsMappers::toDto);
     }
 
     @Override

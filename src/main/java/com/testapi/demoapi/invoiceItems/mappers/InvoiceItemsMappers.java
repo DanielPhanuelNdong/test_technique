@@ -11,14 +11,13 @@ import org.springframework.stereotype.Component;
 public class InvoiceItemsMappers {
 
 
-    public static InvoiceItemsResponse toDto(InvoiceItemsEntity invoiceItemsEntity, InvoiceEntity invoiceEntity) {
+    public static InvoiceItemsResponse toDto(InvoiceItemsEntity invoiceItemsEntity) {
         return InvoiceItemsResponse.builder()
                 .id(invoiceItemsEntity.getId())
                 .name(invoiceItemsEntity.getName())
                 .price(invoiceItemsEntity.getPrice())
                 .total(invoiceItemsEntity.getTotal())
                 .quantity(invoiceItemsEntity.getQuantity())
-                .invoice(InvoiceMappers.toDto(invoiceEntity))
                 .createAt(invoiceItemsEntity.getCreateAt())
                 .updateAt(invoiceItemsEntity.getUpdateAt())
                 .build();

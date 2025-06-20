@@ -1,9 +1,11 @@
 package com.testapi.demoapi.invoiceItems.controller;
 
+import com.testapi.demoapi.customer.dto.CustomerResponse;
 import com.testapi.demoapi.invoice.InvoiceEntity;
 import com.testapi.demoapi.invoiceItems.dto.InvoiceItemsRequest;
 import com.testapi.demoapi.invoiceItems.dto.InvoiceItemsResponse;
 import com.testapi.demoapi.invoiceItems.service.InvoiceItemsService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3009")
 @RequestMapping("/api/invoices/items")
 public class InvoiceItemsController {
 
@@ -40,6 +43,26 @@ public class InvoiceItemsController {
     public ResponseEntity<List<InvoiceItemsResponse>> getAllInvoiceItems() {
         List<InvoiceItemsResponse> address = invoiceItemsService.getAllInvoiceItems();
         return ResponseEntity.ok(address);
+    }
+
+    // get all customers paginated
+    @GetMapping("/paginated")
+    public Page<InvoiceItemsResponse> getCustomersPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return invoiceItemsService.getInvoicesInvoiceItemsPaginated(page, size);
+    }
+
+    // get all customers paginated and sorted
+    @GetMapping("/sorted")
+    public Page<InvoiceItemsResponse> getCustomersPaginatedAndSorted(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return invoiceItemsService.getInvoicesItemsPaginatedAndSorted(page, size, sortBy, direction);
     }
 
     // Update an Invoice Items

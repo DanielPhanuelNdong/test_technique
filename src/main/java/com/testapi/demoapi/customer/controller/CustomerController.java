@@ -3,6 +3,7 @@ package com.testapi.demoapi.customer.controller;
 import com.testapi.demoapi.customer.dto.CustomerRequest;
 import com.testapi.demoapi.customer.dto.CustomerResponse;
 import com.testapi.demoapi.customer.service.CustomerService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3009")
 @RequestMapping("api/customers")
 public class CustomerController {
 
@@ -33,12 +35,34 @@ public class CustomerController {
         return ResponseEntity.ok(customer);
     }
 
-    // keep all customers
+    // get all customers
     @GetMapping
     public ResponseEntity<List<CustomerResponse>> getAllCustomers() {
         List<CustomerResponse> customers = customerService.getAllCustomer();
         return ResponseEntity.ok(customers);
     }
+
+    // get all customers paginated
+    @GetMapping("/paginated")
+    public Page<CustomerResponse> getCustomersPaginated(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        return customerService.getCustomersPaginated(page, size);
+    }
+
+    // get all customers paginated and sorted
+    @GetMapping("/sorted")
+    public Page<CustomerResponse> getCustomersPaginatedAndSorted(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "id") String sortBy,
+            @RequestParam(defaultValue = "asc") String direction
+    ) {
+        return customerService.getCustomersPaginatedAndSorted(page, size, sortBy, direction);
+    }
+
+
 
     // Update a customer
     @PutMapping("/{id}")

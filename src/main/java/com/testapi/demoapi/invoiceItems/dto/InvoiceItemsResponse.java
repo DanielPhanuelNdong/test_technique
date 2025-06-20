@@ -20,7 +20,6 @@ public class InvoiceItemsResponse {
     private Integer quantity;
     private Double price;
     private Double total;
-    private InvoiceResponse invoice;
     private Instant createAt;
     private Instant updateAt;
 }
